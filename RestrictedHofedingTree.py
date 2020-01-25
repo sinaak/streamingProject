@@ -43,7 +43,6 @@ class RHT:
 			break
 
 
-
 		for i, tupleFeature in enumerate(self.featureSets):
 			tmpTrainX = X[ : , tupleFeature]
 			self.models[i].partial_fit(tmpTrainX,y)
