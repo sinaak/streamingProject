@@ -5,6 +5,8 @@ class Tree_Perceptron:
 
     def __init__(self, n_class, n_tree, n_feature):
 
+
+
         self.learning_rate = 0
         self.n_class = n_class
         self.n_feature = n_feature
