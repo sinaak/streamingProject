@@ -42,7 +42,7 @@ class RHT:
                 tmpTrainx = tmpTrainx.reshape(1, tmpTrainx.shape[0])
                 p.append(self.models[i].predict_proba(tmpTrainx))
 
-            self.perceptron.update_parameters(x, choosenY, p)
+            self.perceptron.update_parameters(choosenY, p)
             break
 
         for i, tupleFeature in enumerate(self.featureSets):
