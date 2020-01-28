@@ -2,6 +2,7 @@
 from skmultiflow.trees import HoeffdingTree
 import itertools 
 import numpy as np
+from perceptron import Tree_Perceptron
 class RHT:
 	def __init__(self, K=1, base_learner=HoeffdingTree()):
 		self.K = K 
@@ -30,16 +31,20 @@ class RHT:
 			for i, tupleFeature in enumerate(self.featureSets):
 				tmpTrainX = X[ : , tupleFeature]
 				self.models[i].partial_fit(tmpTrainX,y)
-		
 
-		for x in X:
+			perseptron = Tree_Perceptron(n_class=2, n_tree=len(self.featureSets), n_feature=self.numberOfFeatures)
+
+		for i, x in enumerate(X):
 			p = []
+			choosenY = y[i]
 			for i, tupleFeature in enumerate(self.featureSets):
 				tmpTrainx = np.take(x, tupleFeature)
 				tmpTrainx = tmpTrainx.reshape(1, tmpTrainx.shape[0])
 				p.append(self.models[i].predict_proba(tmpTrainx))
 
+			perseptron.update_parameters(x,choosenY,p)
 			print(len(p))
+			print(p[0].shape)
 			break
 
 

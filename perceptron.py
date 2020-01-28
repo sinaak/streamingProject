@@ -5,8 +5,6 @@ class Tree_Perceptron:
 
     def __init__(self, n_class, n_tree, n_feature):
 
-
-
         self.learning_rate = 0
         self.n_class = n_class
         self.n_feature = n_feature
@@ -27,7 +25,6 @@ class Tree_Perceptron:
         self.instance_counter += 1
         self.learning_rate = 2 / (2 + self.instance_counter + self.n_feature)
 
-
     def get_ai(self, Prob_List, class_i):
         ci = []
         ai = []
@@ -38,15 +35,12 @@ class Tree_Perceptron:
             ai = ai.append( math.log(cij / (1 - cij)) )
         return ai
 
-
     def run_ai(self, ai, class_i, X, yp):
         # update parameters
         theta = np.zeros(self.n_tree)
         for j in range(self.n_tree):
             theta[j] = self.parameters[class_i][j]
         theta, cost = self.logistic_regression(X, yp, self.learning_rate, 3, theta=None)
-
-
 
     def hypothesis(self, theta, X, n):
         h = np.ones((X.shape[0], 1))
@@ -55,7 +49,6 @@ class Tree_Perceptron:
             h[i] = 1 / (1 + np.exp(-float(np.matmul(theta, X[i]))))
         h = h.reshape(X.shape[0])
         return h
-
 
     def GD(self, theta, alpha, num_iters, h, X, y, n):
         cost = np.ones(num_iters)
@@ -68,7 +61,6 @@ class Tree_Perceptron:
         theta = theta.reshape(1, n + 1)
         return theta, cost
 
-
     def logistic_regression(self, X, y, alpha, num_iters, theta=None):
         n = X.shape[1]
         if theta.all() == None:
@@ -80,8 +72,6 @@ class Tree_Perceptron:
         theta, cost = self.GD(theta, alpha, num_iters, h, X, y, n)
         return theta, cost
 
-
-
     def run_perceptron(self, ai, class_i):
 
         theta = np.zeros(self.n_tree)
@@ -91,8 +81,6 @@ class Tree_Perceptron:
         prob = 1 / (1 + np.exp(-float(np.matmul(theta, ai))))
 
         return prob
-
-
 
     def predict_proba(self, X, Prob_List):
 
