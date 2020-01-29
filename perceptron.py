@@ -10,14 +10,15 @@ class Tree_Perceptron:
         self.n_tree = n_tree
         self.parameters = self.make_param_table(n_class, n_tree)
         self.instance_counter = 0
+        self.n_counter = 0
         self.epsilon = 0.001
 
 
     def update_parameters(self, y, Prob_List):
         # update learning rate
         self.instance_counter += 1
-        # print('{} instance arrived'.format(self.instance_counter))
-        self.learning_rate = 2 / (2 + self.instance_counter + self.n_feature)
+        self.n_counter += 1
+        self.learning_rate = 2 / (2 + self.n_counter + self.n_feature)
 
         # fixing zero frequency
         Prob_List = self.fix_zero(Prob_List)
@@ -52,8 +53,7 @@ class Tree_Perceptron:
         for P in Prob_List:
             cij = P.item(class_i)
             ci.append(cij)
-            # print(cij)
-            ai.append(math.log(cij / (1 - cij)) )
+            ai.append( math.log(cij / (1 - cij)) )
         return ai
 
 
@@ -98,19 +98,16 @@ class Tree_Perceptron:
 
 
     def run_perceptron(self, ai, class_i):
-        theta = np.zeros(self.n_tree+1)
-        for j in range(self.n_tree+1):
-
+        theta = np.zeros(self.n_tree + 1)
+        for j in range(self.n_tree + 1):
             theta[j] = self.parameters[class_i][j]
-
 
         n = ai.shape[1]
         one_column = np.ones((ai.shape[0], 1))
-        X = np.concatenate((one_column, ai), axis=1)
+        x = np.concatenate((one_column, ai), axis=1)
+        prob = self.yhat(theta, x, n)
+        return prob[0]
 
-
-        prob = self.yhat(theta, X, n)
-        return prob
 
 
     def predict_proba(self, Prob_List):
@@ -119,8 +116,8 @@ class Tree_Perceptron:
         for i in range(self.n_class):
             ai = self.get_ai(Prob_List, i)
             P[i] = self.run_perceptron(np.array([ai]), i)
-
         P = [(x / sum(P)) for x in P] # makes it as probability vector
+
         return P
 
 
@@ -128,3 +125,7 @@ class Tree_Perceptron:
         # makes a 2D array to keep the learning theta
         param_table = [[(1/n_class) for x in range(n_tree+1)] for y in range(n_class)]
         return param_table
+
+    def reset_learning_rate(self):
+        self.n_counter = 0
+        self.learning_rate = 2 / (2 + self.n_counter + self.n_feature)
