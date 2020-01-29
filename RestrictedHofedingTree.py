@@ -43,7 +43,6 @@ class RHT:
                 p.append(self.models[i].predict_proba(tmpTrainx))
 
             self.perceptron.update_parameters(choosenY, p)
-            break
 
         for i, tupleFeature in enumerate(self.featureSets):
             tmpTrainX = X[:, tupleFeature]
@@ -51,13 +50,28 @@ class RHT:
 
         self.alreadySeenInstances += n_data
 
-        print(self.alreadySeenInstances)
+        #print(self.alreadySeenInstances)
+
+
 
     def predict(self, X):
         N, D = X.shape
+
+        self.predict_proba(X)
 
         return np.zeros(N)
 
 
 
+    def predict_proba(self, X):
 
+        for i, x in enumerate(X):
+            Prob_List = []
+            for i, tupleFeature in enumerate(self.featureSets):
+                tmpTrainx = np.take(x, tupleFeature)
+                tmpTrainx = tmpTrainx.reshape(1, tmpTrainx.shape[0])
+                Prob_List.append(self.models[i].predict_proba(tmpTrainx))
+
+            #print(Prob_List)
+            P = self.perceptron.predict_proba(Prob_List)
+            print(P)

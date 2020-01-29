@@ -53,7 +53,7 @@ class Tree_Perceptron:
             cij = P.item(class_i)
             ci.append(cij)
             # print(cij)
-            ai.append( math.log(cij / (1 - cij)) )
+            ai.append(math.log(cij / (1 - cij)) )
         return ai
 
 
@@ -99,8 +99,10 @@ class Tree_Perceptron:
 
     def run_perceptron(self, ai, class_i):
         theta = np.zeros(self.n_tree)
-        for j in range(self.n_tree + 1):
+        for j in range(self.n_tree+1):
+
             theta[j] = self.parameters[class_i][j]
+
 
         n = ai.shape[1]
         one_column = np.ones((ai.shape[0], 1))
@@ -110,11 +112,14 @@ class Tree_Perceptron:
         return prob
 
 
-    def predict_proba(self, Prob_List): # ? multi point?
+    def predict_proba(self, Prob_List):
         P = [0 for x in range(self.n_class)]
+        print(P)
         for i in range(self.n_class):
             ai = self.get_ai(Prob_List, i)
             P[i] = self.run_perceptron(np.array([ai]), i)
+            print("hiii", ai)
+
         P = [(x / sum(P)) for x in P] # makes it as probability vector
         return P
 
