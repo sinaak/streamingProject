@@ -2,6 +2,8 @@ from skmultiflow.trees import HoeffdingTree
 import itertools
 import numpy as np
 from perceptron import Tree_Perceptron
+from skmultiflow.drift_detection.adwin import ADWIN
+
 
 
 class RHT:
@@ -13,6 +15,9 @@ class RHT:
         self.models = list()
         self.numberOfFeatures = None
         self.alreadySeenInstances = 0
+        self.adwin = ADWIN()
+        self.tree_adwins = []
+
 
     def partial_fit(self, X, y, classes=None, sample_weight=None):
 
@@ -28,6 +33,9 @@ class RHT:
             self.models = [self.base_learner] * len(self.featureSets)
             self.numberOfFeatures = len(self.featureSets)
 
+            # for i in range(len(self.featureSets)):
+            #     self.tree_adwins.append(ADWIN(delta=0.0002))
+
             for i, tupleFeature in enumerate(self.featureSets):
                 tmpTrainX = X[:, tupleFeature]
                 self.models[i].partial_fit(tmpTrainX, y)
@@ -41,8 +49,12 @@ class RHT:
                 tmpTrainx = np.take(x, tupleFeature)
                 tmpTrainx = tmpTrainx.reshape(1, tmpTrainx.shape[0])
                 p.append(self.models[i].predict_proba(tmpTrainx))
+                # tree_pred = self.models[i].predict(tmpTrainx)
+                # self.add_adwin_tree(i, choosenY, tree_pred)
 
+            # self.add_adwin(x, choosenY) # add adwin filter
             self.perceptron.update_parameters(choosenY, p)
+
 
         for i, tupleFeature in enumerate(self.featureSets):
             tmpTrainX = X[:, tupleFeature]
@@ -52,6 +64,24 @@ class RHT:
 
         #print(self.alreadySeenInstances)
 
+    def add_adwin_tree(self, i, y, y_hat):
+        element = 0
+        if y == y_hat : element = 1
+        self.tree_adwins[i].add_element(element)
+        if self.tree_adwins[i].detected_change():
+            print('here!')
+            self.perceptron.reset_tree_params(i)
+            # reset the model as well!
+
+
+    def add_adwin(self, x, y):
+        element = 0
+        y_hat = self.predict(np.array([x]))
+        if y_hat == y: element = 1
+        self.adwin.add_element(element)
+        if self.adwin.detected_change():
+            print('here!')
+            self.perceptron.reset_learning_rate()
 
 
     def predict(self, X):
@@ -82,4 +112,3 @@ class RHT:
             res[j] = np.argmax(P)
 
         return res
-
