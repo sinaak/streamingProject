@@ -100,9 +100,7 @@ class Tree_Perceptron:
     def run_perceptron(self, ai, class_i):
         theta = np.zeros(self.n_tree+1)
         for j in range(self.n_tree+1):
-
             theta[j] = self.parameters[class_i][j]
-
 
         n = ai.shape[1]
         one_column = np.ones((ai.shape[0], 1))
@@ -112,7 +110,6 @@ class Tree_Perceptron:
         prob = self.yhat(theta, X, n)
         return prob
 
-
     def predict_proba(self, Prob_List):
         Prob_List = self.fix_zero(Prob_List)
         P = [0 for x in range(self.n_class)]
@@ -121,8 +118,8 @@ class Tree_Perceptron:
             P[i] = self.run_perceptron(np.array([ai]), i)
 
         P = [(x / sum(P)) for x in P] # makes it as probability vector
-        return P
 
+        return P
 
     def make_param_table(self, n_class, n_tree):
         # makes a 2D array to keep the learning theta

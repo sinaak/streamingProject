@@ -60,23 +60,26 @@ class RHT:
         res = self.predict_proba(X)
 
         return res
+        #return res
 
 
 
     def predict_proba(self, X):
         N, D = X.shape
+
         res = np.zeros(N)
 
-        for i, x in enumerate(X):
+        for j, x in enumerate(X):
+
             Prob_List = []
             for i, tupleFeature in enumerate(self.featureSets):
                 tmpTrainx = np.take(x, tupleFeature)
                 tmpTrainx = tmpTrainx.reshape(1, tmpTrainx.shape[0])
                 Prob_List.append(self.models[i].predict_proba(tmpTrainx))
 
-            #print(Prob_List)
+
             P = self.perceptron.predict_proba(Prob_List)
-            #print(np.argmax(P))
-            res[i] = np.argmax(P)
+            res[j] = np.argmax(P)
 
         return res
+
