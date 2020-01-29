@@ -98,17 +98,21 @@ class Tree_Perceptron:
 
 
     def run_perceptron(self, ai, class_i):
-        theta = np.zeros(self.n_tree)
+        theta = np.zeros(self.n_tree+1)
         for j in range(self.n_tree+1):
 
             theta[j] = self.parameters[class_i][j]
 
+        print('dsfghjkhgfdsghjk')
+        print(ai.shape)
 
         n = ai.shape[1]
         one_column = np.ones((ai.shape[0], 1))
         X = np.concatenate((one_column, ai), axis=1)
 
-        prob = self.yhat(theta, ai, n)
+        print("hhh", X.shape)
+
+        prob = self.yhat(theta, X, n)
         return prob
 
 

@@ -15,7 +15,7 @@ rht = RHT(K=5)
 h = [rht,HoeffdingTree()]
 
 # prepare the evaluator
-evaluator = EvaluatePrequential(pretrain_size=1000, max_samples=100000, show_plot=False,
+evaluator = EvaluatePrequential(pretrain_size=1000, max_samples=100000, show_plot=True,
                                 metrics=['accuracy', 'kappa'], batch_size=10)
 
 # run
