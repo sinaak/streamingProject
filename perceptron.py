@@ -126,6 +126,12 @@ class Tree_Perceptron:
         param_table = [[(1/n_class) for x in range(n_tree+1)] for y in range(n_class)]
         return param_table
 
+
     def reset_learning_rate(self):
         self.n_counter = 0
         self.learning_rate = 2 / (2 + self.n_counter + self.n_feature)
+
+
+    def reset_tree_params(self, tree_i):
+        for i in range(self.n_class):
+            self.parameters[i][tree_i] = self.epsilon
