@@ -57,13 +57,15 @@ class RHT:
     def predict(self, X):
         N, D = X.shape
 
-        self.predict_proba(X)
+        res = self.predict_proba(X)
 
-        return np.zeros(N)
+        return res
 
 
 
     def predict_proba(self, X):
+        N, D = X.shape
+        res = np.zeros(N)
 
         for i, x in enumerate(X):
             Prob_List = []
@@ -74,4 +76,7 @@ class RHT:
 
             #print(Prob_List)
             P = self.perceptron.predict_proba(Prob_List)
-            print(P)
+            #print(np.argmax(P))
+            res[i] = np.argmax(P)
+
+        return res
