@@ -13,17 +13,15 @@ stream_LED = LEDGenerator()
 stream_LED.prepare_for_use()
 
 # instantiate a classifier
-rhtA = RHT(K=4, nc=2,base_learner=HAT())
-rht4 = RHT(K=4, nc=2)
-rht2 = RHT(K=2, nc=2)
-rht3 = RHT(K=3, nc=2)
+rhtA = RHT(K=2, nc=2)
+rhtB = RHT(K=2, nc=2,adwinEnabler=True)
 
 
-h = [rht2]
+h = [rhtA, rhtB]
 
 # prepare the evaluator
-evaluator = EvaluatePrequential(pretrain_size=100, max_samples=100000, show_plot=False, metrics=['accuracy', 'kappa'],
+evaluator = EvaluatePrequential(pretrain_size=100, max_samples=40000, show_plot=True, metrics=['accuracy', 'kappa'],
                                 batch_size=1)
 
 # run
-evaluator.evaluate(stream=stream_LED, model=h, model_names=['RHT'])
+evaluator.evaluate(stream=stream, model=h, model_names=['RHT','RHT ADWIN'])

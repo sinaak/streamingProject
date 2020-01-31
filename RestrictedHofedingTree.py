@@ -14,6 +14,7 @@ class RHT:
             K=1,
             nc=2,
             base_learner=HoeffdingTree(),
+            adwinEnabler = False,
     ):
 
         self.K = K
@@ -27,6 +28,7 @@ class RHT:
         self.tree_adwins = []
         self.NC = nc
         self.perceptron = None
+        self.adwinEnabler = adwinEnabler
 
     def pre_train_models(self, X, y):
 
@@ -43,8 +45,9 @@ class RHT:
         self.models = [self.base_learner] * len(self.featureSets)
         self.numberOfFeatures = len(self.featureSets)
 
-        for i in range(len(self.featureSets)):
-            self.tree_adwins.append(ADWIN(delta=0.0002))
+        if self.adwinEnabler:
+            for i in range(len(self.featureSets)):
+                self.tree_adwins.append(ADWIN(delta=0.00002))
 
         for (i, tupleFeature) in enumerate(self.featureSets):
             tmpTrainX = X[:, tupleFeature]
@@ -59,10 +62,12 @@ class RHT:
                 tmpTrainx = tmpTrainx.reshape(1, tmpTrainx.shape[0])
                 p.append(self.models[j].predict_proba(tmpTrainx))
 
-                # tree_pred = self.models[i].predict(tmpTrainx)
-                # self.add_adwin_tree(i, choosenY, tree_pred)
+                if self.adwinEnabler:
+                    tree_pred = self.models[j].predict(tmpTrainx)
+                    self.add_adwin_tree(j, choosenY, tree_pred)
 
-            # self.add_adwin(x, choosenY) # add adwin filter
+            if self.adwinEnabler:
+                self.add_adwin(x, choosenY) # add adwin filter
 
             self.perceptron.update_parameters(choosenY, p)
 
@@ -103,6 +108,7 @@ class RHT:
         self.tree_adwins[i].add_element(element)
         if self.tree_adwins[i].detected_change():
             self.perceptron.reset_tree_params(i)
+            self.models[i] = self.base_learner
 
             # reset the model as well!
 
